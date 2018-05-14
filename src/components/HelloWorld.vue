@@ -48,6 +48,7 @@ export default {
         wireframe: true
       })
       const cube = new this.Three.Mesh(cubeGeometry, cubeMaterial)
+      cube.position.y = 2
       scene.add(cube)
 
       const sphereGeometry = new this.Three.SphereGeometry(4, 20, 20)
@@ -56,6 +57,7 @@ export default {
         wireframe: true
       })
       const sphere = new this.Three.Mesh(sphereGeometry, sphereMaterial)
+      sphere.position.y = 10
       scene.add(sphere)
 
       camera.position.x = -30
