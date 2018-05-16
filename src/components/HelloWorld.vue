@@ -5,6 +5,7 @@
 
 <script>
 import * as Three from 'three'
+import Stats from 'stats-js'
 
 export default {
   name: 'HelloWorld',
@@ -12,6 +13,7 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       Three,
+      Stats,
       scene: null,
       camera: null,
       render: null
@@ -73,8 +75,15 @@ export default {
         .appendChild(this.renderer.domElement)
       this.renderer.render(this.scene, this.camera)
     },
+    showFps() {
+      this.stats = new this.Stats()
+      this.stats.domElement.style.position = 'absolute'
+      this.stats.domElement.style.left = '0px'
+      this.stats.domElement.style.top = '0px'
+      document.body.appendChild(this.stats.domElement)
+    },
     renderScene() {
-      console.log('what is going on')
+      this.stats.update()
       requestAnimationFrame(this.renderScene)
       this.renderer.render(this.scene, this.camera)
     }
@@ -83,6 +92,7 @@ export default {
     const self = this
     window.onload = function() {
       self.init()
+      self.showFps()
       self.renderScene()
     }
   }
