@@ -16,7 +16,8 @@ export default {
       Stats,
       scene: null,
       camera: null,
-      render: null
+      render: null,
+      cube: null
     }
   },
   methods: {
@@ -29,15 +30,20 @@ export default {
         1000
       )
       this.renderer = new this.Three.WebGLRenderer()
-      this.renderer.setClearColor(0xeeeeee)
+      this.renderer.setClearColor(0xeeeeee, 1.0)
       this.renderer.setSize(window.innerWidth, window.innerHeight)
+      this.renderer.shadowMap.enabled = true
 
       const axes = new this.Three.AxesHelper(20)
       this.scene.add(axes)
 
-      const planeGeometry = new this.Three.PlaneGeometry(60, 20, 1, 1)
-      const planeMaterial = new this.Three.MeshBasicMaterial({
-        color: 0xcccccc
+      const spotLight = new this.Three.SpotLight(0xffffff)
+      spotLight.position.set(-40, 60, -10)
+      this.scene.add(spotLight)
+
+      const planeGeometry = new this.Three.PlaneGeometry(60, 20)
+      const planeMaterial = new this.Three.MeshLambertMaterial({
+        color: 0xffffff
       })
       const plane = new this.Three.Mesh(planeGeometry, planeMaterial)
 
@@ -45,24 +51,26 @@ export default {
       plane.position.x = 15
       plane.position.y = 0
       plane.position.z = 0
+      plane.receiveShadow = true
       this.scene.add(plane)
 
       const cubeGeometry = new this.Three.BoxGeometry(4, 4, 4)
-      const cubeMaterial = new this.Three.MeshBasicMaterial({
-        color: 0xff0000,
-        wireframe: true
+      const cubeMaterial = new this.Three.MeshLambertMaterial({
+        color: 0xff0000ff
       })
-      const cube = new this.Three.Mesh(cubeGeometry, cubeMaterial)
-      cube.position.y = 2
-      this.scene.add(cube)
+      this.cube = new this.Three.Mesh(cubeGeometry, cubeMaterial)
+      this.cube.position.y = 2
+      this.cube.castShadow = true
+      this.scene.add(this.cube)
 
       const sphereGeometry = new this.Three.SphereGeometry(4, 20, 20)
-      const sphereMaterial = new this.Three.MeshBasicMaterial({
-        color: 0x7777ff,
-        wireframe: true
+      const sphereMaterial = new this.Three.MeshLambertMaterial({
+        color: 0x7777ffff
       })
       const sphere = new this.Three.Mesh(sphereGeometry, sphereMaterial)
-      sphere.position.y = 10
+      sphere.position.x = 10
+      sphere.position.y = 4
+      sphere.castShadow = true
       this.scene.add(sphere)
 
       this.camera.position.x = -30
@@ -85,6 +93,8 @@ export default {
     renderScene() {
       this.stats.update()
       requestAnimationFrame(this.renderScene)
+      this.cube.rotation.x += 0.1
+      this.cube.rotation.y += 0.1
       this.renderer.render(this.scene, this.camera)
     }
   },
